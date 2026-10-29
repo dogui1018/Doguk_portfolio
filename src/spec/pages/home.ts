@@ -7,6 +7,7 @@ import type { PageSpec } from "../types";
 export const homeSpec: PageSpec = {
   id: "home",
   title: "도국 — 프론트엔드 개발자",
+  layout: "split",
   aside: [
     {
       id: "intro.photo",

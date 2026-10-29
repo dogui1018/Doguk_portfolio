@@ -2,16 +2,19 @@ import Link from "next/link";
 import { css, cx } from "styled-system/css";
 import { InspectFrame } from "@/inspect/InspectFrame";
 import { InspectToggle } from "@/inspect/InspectToggle";
+import { WhyNote } from "@/inspect/WhyNote";
 import type {
   HeadingNode,
   LabGridNode,
   MediaNode,
+  MetaGridNode,
   NavNode,
   SectionNode,
   SpecNode,
   TextNode,
   WorkCardNode,
 } from "@/spec/types";
+import { GateDemo } from "./GateDemo";
 import { ReviewStamp } from "./ReviewStamp";
 
 /* ---------- 노드별 컴포넌트 ---------- */
@@ -19,7 +22,7 @@ import { ReviewStamp } from "./ReviewStamp";
 const textStyles: Record<TextNode["variant"], string> = {
   greeting: css({ fontSize: "18px", fontWeight: 500 }),
   lead: css({ fontSize: "18px", lineHeight: 1.85, color: "body" }),
-  body: css({ fontSize: "16px", lineHeight: 1.75, color: "body" }),
+  body: css({ fontSize: "17px", lineHeight: 1.85, color: "body" }),
   note: css({ fontSize: "18px", lineHeight: 1.85, color: "muted" }),
   kicker: css({ fontSize: "13px", fontWeight: 500, color: "muted" }),
 };
@@ -174,6 +177,40 @@ function LabGrid({ node }: { node: LabGridNode }) {
   );
 }
 
+function MetaGrid({ node }: { node: MetaGridNode }) {
+  return (
+    <dl
+      className={css({
+        display: "grid",
+        gridTemplateColumns: { base: "repeat(2, minmax(0, 1fr))", md: "repeat(4, minmax(0, 1fr))" },
+        gap: "16px",
+        py: "20px",
+        borderTop: "1px solid token(colors.line)",
+        borderBottom: "1px solid token(colors.line)",
+      })}
+    >
+      {node.items.map((item) => (
+        <div key={item.term} className={css({ display: "flex", flexDirection: "column", gap: "4px" })}>
+          <dt className={css({ fontSize: "12px", color: "muted" })}>{item.term}</dt>
+          {item.lines.map((line) => (
+            <dd key={line.text} className={css({ fontSize: "14px", lineHeight: 1.5 })}>
+              {line.href ? (
+                <a href={line.href} className={css({ color: "cobalt", _hover: { color: "cobaltDeep" } })}>
+                  {line.text}
+                </a>
+              ) : (
+                line.text
+              )}
+            </dd>
+          ))}
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+const sectionTitle = css({ fontSize: "22px", fontWeight: 700 });
+
 const sectionGap: Record<SectionNode["gap"], string> = {
   sm: css({ gap: "16px" }),
   md: css({ gap: "18px" }),
@@ -183,7 +220,7 @@ const sectionGap: Record<SectionNode["gap"], string> = {
 function Section({ node, order }: { node: SectionNode; order: number }) {
   return (
     <section id={node.anchor} aria-label={node.heading} className={cx(css({ display: "flex", flexDirection: "column", scrollMarginTop: "48px" }), sectionGap[node.gap])}>
-      {node.heading && <h2 className={textStyles.kicker}>{node.heading}</h2>}
+      {node.heading && <h2 className={node.headingStyle === "title" ? sectionTitle : textStyles.kicker}>{node.heading}</h2>}
       {node.children.map((child, i) => (
         <SpecNodeView key={child.id} node={child} order={order + i + 1} framed={false} />
       ))}
@@ -218,6 +255,12 @@ function renderNode(node: SpecNode, order: number) {
       return <ReviewStamp node={node} />;
     case "inspectToggle":
       return <InspectToggle text={node.text} />;
+    case "metaGrid":
+      return <MetaGrid node={node} />;
+    case "gateDemo":
+      return <GateDemo node={node} />;
+    case "whyNote":
+      return <WhyNote content={node.content} />;
     case "section":
       return <Section node={node} order={order} />;
   }

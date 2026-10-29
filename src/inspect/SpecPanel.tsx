@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { css } from "styled-system/css";
-import type { PageSpec, SpecNode } from "@/spec/types";
+import { topLevelNodes, type PageSpec, type SpecNode } from "@/spec/types";
 import { toPanelJson, useInspect } from "./store";
 
 /** 페이지 스펙을 위에서 아래 순서로 펼쳐 레이어 목록을 만든다. */
@@ -78,7 +78,7 @@ export function SpecPanel({ page }: { page: PageSpec }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [enabled, close]);
 
-  const layers = flatten([...page.aside, ...page.main]);
+  const layers = flatten(topLevelNodes(page));
   const current = selected ?? layers[0]?.node ?? null;
 
   return (

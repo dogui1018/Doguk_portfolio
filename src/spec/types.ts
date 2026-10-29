@@ -79,10 +79,39 @@ export type InspectToggleNode = BaseNode & {
   text: string;
 };
 
+export type MetaGridNode = BaseNode & {
+  type: "metaGrid";
+  items: { term: string; lines: { text: string; href?: string }[] }[];
+};
+
+/** 관문 시나리오 하나: 어느 단계에서 멈추는지와 돌려받는 결과 */
+export type GateScenario = {
+  key: string;
+  button: string;
+  /** 통과한 단계 수. steps.length와 같으면 끝까지 통과 */
+  passedSteps: number;
+  result: string;
+  explain: string;
+};
+
+export type GateDemoNode = BaseNode & {
+  type: "gateDemo";
+  steps: string[];
+  scenarios: GateScenario[];
+};
+
+/** 뜯어보기를 켰을 때만 펼쳐지는 제작 의도 메모 */
+export type WhyNoteNode = BaseNode & {
+  type: "whyNote";
+  content: string;
+};
+
 export type SectionNode = BaseNode & {
   type: "section";
   anchor?: string;
   heading?: string;
+  /** kicker: 작은 회색 머리말, title: 본문 제목(h2) */
+  headingStyle?: "kicker" | "title";
   gap: "sm" | "md" | "lg";
   children: SpecNode[];
 };
@@ -97,13 +126,35 @@ export type SpecNode =
   | LabGridNode
   | ReviewStampNode
   | InspectToggleNode
+  | MetaGridNode
+  | GateDemoNode
+  | WhyNoteNode
   | SectionNode;
 
-export type PageSpec = {
+/** 홈처럼 왼쪽 소개 + 오른쪽 본문으로 나뉜 페이지 */
+export type SplitPageSpec = {
   id: string;
   title: string;
+  layout: "split";
   /** 왼쪽 단: 누구인지, 목차, 뜯어보기 스위치 */
   aside: SpecNode[];
   /** 오른쪽 단: 흐르는 본문 */
   main: SpecNode[];
 };
+
+/** 케이스 스터디처럼 한 단으로 읽는 글 페이지 */
+export type ArticlePageSpec = {
+  id: string;
+  title: string;
+  layout: "article";
+  /** 상단 막대에 놓이는 노드 (돌아가기 링크, 뜯어보기 스위치) */
+  toolbar: SpecNode[];
+  body: SpecNode[];
+};
+
+export type PageSpec = SplitPageSpec | ArticlePageSpec;
+
+/** 레이어 목록을 만들 때 쓰는, 페이지의 최상위 노드 전체 */
+export function topLevelNodes(page: PageSpec): SpecNode[] {
+  return page.layout === "split" ? [...page.aside, ...page.main] : [...page.toolbar, ...page.body];
+}

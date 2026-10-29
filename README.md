@@ -13,15 +13,18 @@ src/
 ├─ spec/
 │  ├─ types.ts              스펙 노드 타입 (text, heading, workCard, reviewStamp …)
 │  ├─ pages/home.ts         홈 화면 스펙 — 내용을 고칠 때는 여기만 수정
+│  ├─ pages/caseGate.ts     케이스 스터디: AI 명령 검증 관문
 │  └─ render/
-│     ├─ PageView.tsx       두 단 레이아웃
+│     ├─ PageView.tsx       layout에 맞는 틀 (split: 두 단 / article: 한 단 글)
 │     ├─ SpecRenderer.tsx   노드 타입 → 컴포넌트 디스패처
+│     ├─ GateDemo.tsx       관문 단계를 직접 눌러보는 데모
 │     └─ ReviewStamp.tsx    "리뷰 8번" 장난감
 ├─ inspect/
 │  ├─ store.ts              뜯어보기 상태 (Zustand)
 │  ├─ InspectFrame.tsx      요소 테두리·이름표
 │  ├─ InspectToggle.tsx     뜯어보기 스위치
 │  ├─ InspectShift.tsx      패널이 열리면 본문이 비켜서기
+│  ├─ WhyNote.tsx           뜯어보기를 켜야 보이는 "왜 이렇게 만들었나" 메모
 │  └─ SpecPanel.tsx         레이어 목록 + 스펙 JSON (모바일은 아래 시트)
 └─ app/                     Next.js App Router
 ```
@@ -54,5 +57,6 @@ npm run lint
 - [ ] 작업 중인 사진 (`intro.photo`)
 - [ ] 직접 쓰는 소개 한두 줄 (`about.personal`)
 - [ ] Visual Spec Builder 화면 녹화 (`work.vsb.media`, `lab.*`)
-- [ ] 케이스 스터디 페이지를 스펙으로 옮기기 (`/work/visual-spec-builder`)
+- [x] 케이스 스터디 페이지를 스펙으로 옮기기 (`/work/visual-spec-builder`)
+- [ ] 케이스 스터디의 AI 활용 한두 줄과 배운 점 (`case.ai.p2`, `case.learn.p1`)
 - [ ] 이 사이트 제작기
