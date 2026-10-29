@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Panda CSS가 생성하는 코드
+    "styled-system/**",
   ]),
 ]);
 
